@@ -20,7 +20,7 @@ namespace draco::rhi
     struct Pipeline
     {
         bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
-        uint64_t state = 0;
+        uint64_t state = 0; // Stored as raw bgfx bitmask
     };
 
     static std::vector<Buffer>   g_buffers;
@@ -35,6 +35,7 @@ namespace draco::rhi
         g_height = height;
 
         bgfx::Init init{};
+
         // TODO: Replace this
         init.type = bgfx::RendererType::Count; // Auto-selects the renderer
         
@@ -97,25 +98,60 @@ namespace draco::rhi
         bgfx::reset(width, height, BGFX_RESET_VSYNC);
     }
 
+    uint64_t map_state(PipelineState state)
+    {
+        uint64_t bgfx_state = BGFX_STATE_NONE;
+        if (state & PipelineState::WriteRGB) bgfx_state |= BGFX_STATE_WRITE_RGB;
+        if (state & PipelineState::WriteAlpha) bgfx_state |= BGFX_STATE_WRITE_A;
+        if (state & PipelineState::MSAA) bgfx_state |= BGFX_STATE_MSAA;
+        if (state & PipelineState::PrimitiveTriStrip) bgfx_state |= BGFX_STATE_PT_TRISTRIP;
+        return bgfx_state;
+    }
+
     ShaderHandle create_shader(const void* data, uint32_t size)
     {
+        // Check the input data before trying to create the shader
+        // If it's invalid, print an error & return an invalid handle except for crashing
+        if(!data || size == 0)
+        {
+            std::println("Error: Invalid shader data or size");
+            return InvalidShader;
+        }
+
         const bgfx::Memory* mem = bgfx::copy(data, size);
         return bgfx::createShader(mem).idx;
     }
 
     PipelineHandle create_pipeline(const PipelineDesc& desc)
     {
+        // Check the input data before trying to create the pipeline
+        // If it's invalid, print an error & return an invalid handle except for crashing
+        if(!desc.vs || !desc.fs)
+        {
+            std::println("Error: Invalid shader handles in PipelineDesc");
+            return InvalidPipeline;
+        }
+
+
         bgfx::ShaderHandle vs{ desc.vs };
         bgfx::ShaderHandle fs{ desc.fs };
 
         bgfx::ProgramHandle prog = bgfx::createProgram(vs, fs, true);
 
-        g_pipelines.push_back({ prog, desc.state });
+        g_pipelines.push_back({ prog, map_state(desc.state) });
         return (PipelineHandle)(g_pipelines.size() - 1);
     }
 
     BufferHandle create_vertex_buffer(const void* data, uint32_t size)
     {
+        // Check the input data before trying to create the buffer
+        // If it's invalid, print an error & return an invalid handle except for crashing
+        if(!data || size == 0)
+        {
+            std::println("Error: Invalid vertex buffer data or size");
+            return InvalidBuffer;
+        }
+
         bgfx::VertexLayout layout;
         layout.begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
@@ -133,6 +169,14 @@ namespace draco::rhi
 
     BufferHandle create_index_buffer(const void* data, uint32_t size)
     {
+        // Check the input data before trying to create the buffer
+        // If it's invalid, print an error & return an invalid handle except for crashing
+        if(!data || size == 0)
+        {
+            std::println("Error: Invalid index buffer data or size");
+            return InvalidBuffer;
+        }
+
         bgfx::IndexBufferHandle ibh = bgfx::createIndexBuffer(
             bgfx::copy(data, size)
         );
@@ -141,19 +185,32 @@ namespace draco::rhi
         return (BufferHandle)(g_buffers.size() - 1);
     }
 
+    void identity_matrix(float* _mtx)
+    {
+        bx::mtxIdentity(_mtx);
+    }
+
     void submit(const RenderPacket& p, ViewID view)
     {
-        if (p.pipeline >= g_pipelines.size() || p.vertex_buffer >= g_buffers.size()) {
-            std::println("Error: Invalid handle in RenderPacket");
+        // Check for null/invalid handles
+        if (p.pipeline == InvalidPipeline || p.vertex_buffer == InvalidBuffer) {
+            std::println("Error: Attempted to submit RenderPacket with unitialized handles.");
             return;
         }
-        Pipeline& pipe = g_pipelines[p.pipeline];
+
+        // Check for out of bounds handles
+        if (p.pipeline >= g_pipelines.size() || p.vertex_buffer >= g_buffers.size()) {
+            std::println("Error: Handle out of bounds! The resource may have been destroyed already or it was never created. Pipeline Handle: {}, Vertex Buffer Handle: {}", p.pipeline, p.vertex_buffer);
+            return;
+        }
+
+        Pipeline& pipeline = g_pipelines[p.pipeline];
         Buffer& vb = g_buffers[p.vertex_buffer];
 
         bgfx::setTransform(p.model);
         bgfx::setVertexBuffer(0, vb.vbh);
 
-        if (p.index_buffer != UINT16_MAX)
+        if (p.index_buffer != InvalidBuffer)
         {
             if (p.index_buffer >= g_buffers.size()) {
                 std::println("Error: Invalid index buffer handle in RenderPacket");
@@ -164,8 +221,8 @@ namespace draco::rhi
                 bgfx::setIndexBuffer(ib.ibh);
         }
 
-        bgfx::setState(pipe.state);
-        bgfx::submit(view, pipe.program);
+        bgfx::setState(pipeline.state);
+        bgfx::submit(view, pipeline.program);
     }
 
     void begin_frame()

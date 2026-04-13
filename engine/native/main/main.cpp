@@ -24,6 +24,8 @@ int main(int argc, char* argv[])
 
     if (!window) {
         std::println("Failed to create window: {}", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         return -1;
     }
 
@@ -42,16 +44,31 @@ int main(int argc, char* argv[])
         ndt = SDL_GetPointerProperty(props, SDL_PROP_WINDOW_X11_DISPLAY_POINTER, nullptr); // Get the X11 display pointer
         nwh = (void*)(uintptr_t)SDL_GetNumberProperty(props, SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0); // Get the X11 window number and cast it to a pointer
     }
+    else if (driver && std::string_view(driver) == "wayland")
+    {
+        ndt = SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER, nullptr); // Get the Wayland display pointer
+        nwh = SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER, nullptr); // Get the Wayland surface pointer
+    }
+    else {
+        std::println("Unsupported video driver: {}", driver);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return -1;
+    }
     
 #endif
 
     if (!nwh) {
         std::println("Failed to get native window handle");
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         return -1;
     }
 
     if(!ndt) {
         std::println("Failed to get native display type");
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         return -1;
     }
 
@@ -80,7 +97,7 @@ int main(int argc, char* argv[])
     // If the path is empty, return an error
     if (vs_data.empty() || fs_data.empty()) {
         std::println("Failed to load shaders");
-        std::println("Workin' dir: {}", std::filesystem::current_path().string());
+        std::println("Working dir: {}", std::filesystem::current_path().string());
         draco::rhi::shutdown();
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -90,13 +107,14 @@ int main(int argc, char* argv[])
     auto vsh = draco::rhi::create_shader(vs_data.data(), (uint32_t)vs_data.size());
     auto fsh = draco::rhi::create_shader(fs_data.data(), (uint32_t)fs_data.size());
     
-
-    // TODO: Expose our own macros for the state flags instead of using bgfx's directly, tis is just for testin'
-    auto pipeline = draco::rhi::create_pipeline({vsh, fsh, (0 
-        | BGFX_STATE_WRITE_RGB 
-        | BGFX_STATE_WRITE_A 
-        | BGFX_STATE_MSAA 
-        | BGFX_STATE_PT_TRISTRIP)});
+    auto pipeline = draco::rhi::create_pipeline({
+    vsh, 
+    fsh, 
+    draco::rhi::PipelineState::WriteRGB | 
+    draco::rhi::PipelineState::WriteAlpha | 
+    draco::rhi::PipelineState::MSAA | 
+    draco::rhi::PipelineState::PrimitiveTriStrip
+    });
 
     bool running = true;
 
@@ -118,10 +136,12 @@ int main(int argc, char* argv[])
 
         draco::rhi::RenderPacket packet{};
         packet.vertex_buffer = vbh;
-        packet.index_buffer = UINT16_MAX;  // No index buffer
+        packet.index_buffer = draco::rhi::InvalidBuffer;  // No index buffer
         packet.pipeline = pipeline;
         bx::mtxIdentity(packet.model);
         
+        draco::rhi::identity_matrix(packet.model);
+
         draco::rhi::submit(packet, 0);
 
         draco::rhi::end_frame();
@@ -133,5 +153,3 @@ int main(int argc, char* argv[])
     SDL_Quit();
     return 0;
 }
-
-// Fun fact: AR literally went mad & tis is the result
