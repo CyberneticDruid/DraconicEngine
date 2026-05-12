@@ -1,13 +1,16 @@
+module;
+
+#include <cstdint>
+#include <format>
+
 export module core.version;
-export import std;
-import std.compat;
 
 export namespace draco {
 
     struct Version {
-        uint16_t major;
-        uint16_t minor;
-        uint16_t patch;
+        std::uint16_t major;
+        std::uint16_t minor;
+        std::uint16_t patch;
     };
 
     constexpr Version VERSION { .major = 2026, .minor = 0, .patch = 0 };

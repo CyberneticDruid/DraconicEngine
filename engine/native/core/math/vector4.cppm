@@ -8,9 +8,11 @@ module;
     #include <arm_neon.h>
 #endif
 
+#include <cmath>
+#include <type_traits>
+
 export module core.math.vector4;
 import core.defs;
-import std;
 
 export namespace draco::math {
 

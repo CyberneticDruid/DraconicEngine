@@ -1,17 +1,18 @@
+module;
+
+#include <type_traits>
+
 export module core.defs;
 export import core.version;
-import std;
 
 static_assert(__cplusplus >=  202302L, "Minimum of C++23 required.");
 
 export namespace draco {
 
-    // Traits and Concepts
-
-    template <typename T>
+    template<typename T>
     concept arithmetic = std::is_arithmetic_v<T>;
 
-    template <typename T>
+    template<typename T>
     concept trivial = std::is_trivial_v<T>;
 
     // Whether the default value of a type is just all-0 bytes.
@@ -25,8 +26,4 @@ export namespace draco {
 
     template <typename T>
     concept zero_constructible = is_zero_constructible_v<T>;
-
-    // Limit the depth of recursive algorithms when dealing with Array/Dictionary
-    constexpr int MAX_RECURSION = 100;
-
 }

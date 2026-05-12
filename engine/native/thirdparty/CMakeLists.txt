@@ -4,13 +4,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(BGFX_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BGFX_BUILD_TOOLS ON CACHE BOOL "" FORCE) # We need this for shaderc
 set(BGFX_INSTALL OFF CACHE BOOL "" FORCE)
-set(BGFX_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE) # Don't build as a shared lib, it causes build issues
+set(BGFX_LIBRARY_TYPE "STATIC")
 
 set(BX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bx CACHE STRING "" FORCE) 
 set(BIMG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bimg CACHE STRING "" FORCE) 
 set(BGFX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bgfx CACHE STRING "" FORCE) 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bx bx-build) 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bimg bimg-build) 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bx bx-build)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bimg bimg-build)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx bgfx-build)
 
 set(SDL_MAIN_HANDLED ON CACHE BOOL "" FORCE)
@@ -31,3 +31,5 @@ set(SDL_PULSEAUDIO_SHARED OFF CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/sdl sdl-build)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/stb)
+
+target_link_libraries(bgfx PUBLIC bx bimg)

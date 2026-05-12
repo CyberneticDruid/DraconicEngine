@@ -1,8 +1,14 @@
+module;
+
+#include <type_traits>
+#include <concepts>
+#include <limits>
+#include <cmath>
+
 export module core.math;
 export import core.math.constants;
 export import core.math.vector4;
 export import core.defs;
-import std;
 
 export namespace draco::math {
     template <arithmetic T>
@@ -43,12 +49,12 @@ export namespace draco::math {
 
     template <std::floating_point T>
     constexpr T deg_to_rad(T y) noexcept {
-        return y * (std::numbers::pi_v<T> / T{180.});
+        return y * (T{PI} / T{180.});
     }
 
     template <std::floating_point T>
     constexpr T rad_to_deg(T y) noexcept {
-        return y * (T{180.} / std::numbers::pi_v<T>);
+        return y * (T{180.} / T{PI});
     }
 
     template <std::floating_point T>
