@@ -18,7 +18,6 @@ export namespace draco::memory
 {
 	namespace page
 	{
-		using namespace std;
 #ifdef __unix__
 		Error alloc(
 			Allocator alloc,
@@ -53,7 +52,7 @@ export namespace draco::memory
 		}
 #endif
 #ifdef _WIN32
-		AllocatorError alloc(
+		Error alloc(
 			Allocator alloc,
 			Slice *dst,
 			size_t size,
@@ -82,14 +81,15 @@ export namespace draco::memory
 			return AllocatorError::Okay;
 		}
 
-		AllocatorError allocLargePages(
+		Error allocLargePages(
 			Allocator alloc,
 			Slice *dst,
 			size_t size,
 			size_t align
 		)
 		{
-			size_t pageSizeSub1 = GetLargePageMinimum() - 1;
+			size_t pageSize = GetLargePageMinimum();
+			size_t pageSizeSub1 = (pageSize ? pageSize : (4 * 1024)) - 1;
 			size_t reqSize = (size + (pageSizeSub1)) & (~pageSizeSub1);
 			void *ptr;
 			ptr = VirtualAlloc(
@@ -109,7 +109,7 @@ export namespace draco::memory
 
 		void free(Allocator alloc, Slice block)
 		{
-			VirtualFree(block.data, block.size, MEM_DECOMMIT | MEM_RELEASE);
+			VirtualFree(block.data, block.size, MEM_DECOMMIT);
 		}
 #endif
 

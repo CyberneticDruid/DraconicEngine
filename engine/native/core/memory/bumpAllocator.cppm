@@ -14,7 +14,6 @@ export namespace draco::memory
 {
 	namespace bump
 	{
-		using namespace std;
 		struct Node;
 
 		struct Node
@@ -80,6 +79,7 @@ export namespace draco::memory
 			size_t spillover = 0;
 			Slice newBlock;
 			uintptr_t currentPtr;
+			assert(std::popcount(align) == 1);
 			lastNode = node;
 			while (((*node) != nullptr) & (pos > 0))
 			{
@@ -89,7 +89,7 @@ export namespace draco::memory
 				node = &((*node)->next);
 			}
 			assert(pos == 0); // fraudulent mark provided
-			currentPtr = (uintptr_t)&((*lastNode)->data[pos]);
+			currentPtr = (uintptr_t)&((*lastNode)->data[oldPos]);
 			reqSize += ((reqSize + currentPtr - 1) & alignMask);
 			if (!(*lastNode) || (reqSize > ((*lastNode)->size - oldPos)))
 			{
@@ -112,6 +112,7 @@ export namespace draco::memory
 				(*node)->size = newBlock.size - sizeof(Node);
 				pos = 0;
 				lastNode = node;
+				oldPos = 0;
 			}
 			currentPtr = ((uintptr_t)&((*lastNode)->data[oldPos]));
 			reqSize = (size + ((currentPtr - 1) & alignMask)) & ~alignMask;

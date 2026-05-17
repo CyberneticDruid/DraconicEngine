@@ -10,7 +10,6 @@ export namespace draco::memory
 {
 	namespace fixed
 	{
-		using namespace std;
 		struct FixedAllocator
 		{
 			void *buffer;
