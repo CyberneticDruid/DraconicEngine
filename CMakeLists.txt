@@ -73,32 +73,31 @@ set(SHADER_DIR "${CMAKE_SOURCE_DIR}/engine/native/rendering/shaders")
 set(BGFX_INCLUDE "${CMAKE_SOURCE_DIR}/engine/native/thirdparty/bgfx/src")
 
 if(WIN32)
-
-    set(SHADERC
-        "${CMAKE_SOURCE_DIR}/engine/native/thirdparty/bgfx/.build/win64_vs2022/bin/shadercRelease.exe"
-    )
+    find_program(SHADERC NAMES shadercRelease.exe shaderc PATHS "${CMAKE_SOURCE_DIR}/engine/native/thirdparty/bgfx/.build" PATH_SUFFIXES win64_vs2022/bin win64_vs2019/bin win64_mingw-gcc/bin NO_DEFAULT_PATH)
 
     set(SHADER_PLATFORM windows)
     set(SHADER_PROFILE spirv)
 
 elseif(APPLE)
-
-    set(SHADERC
-        "${CMAKE_SOURCE_DIR}/engine/native/thirdparty/bgfx/.build/osx-arm64_clang/bin/shadercRelease"
-    )
+    find_program(SHADERC NAMES shadercRelease shaderc PATHS "${CMAKE_SOURCE_DIR}/engine/native/thirdparty/bgfx/.build" PATH_SUFFIXES osx-arm64_clang/bin osx-x64_clang/bin NO_DEFAULT_PATH)
 
     set(SHADER_PLATFORM osx)
     set(SHADER_PROFILE metal)
 
 elseif(UNIX)
-
-    set(SHADERC
-        "${CMAKE_SOURCE_DIR}/engine/native/thirdparty/bgfx/.build/linux64_gcc/bin/shadercRelease"
-    )
+    find_program(SHADERC NAMES shadercRelease shaderc PATHS "${CMAKE_SOURCE_DIR}/engine/native/thirdparty/bgfx/.build" PATH_SUFFIXES linux64_gcc/bin linux64_clang/bin NO_DEFAULT_PATH)
 
     set(SHADER_PLATFORM linux)
     set(SHADER_PROFILE spirv)
 
+endif()
+
+if(NOT SHADERC)
+    message(FATAL_ERROR
+        "shaderc not found under bgfx/.build"
+        "Build bgfx tools first (make shaderc in the bgfx directory)"
+        "or set -DSHADERC=/path/to/shadercRelease when configuring"
+    )
 endif()
 
 # Shader source files
