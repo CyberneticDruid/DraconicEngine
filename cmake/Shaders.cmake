@@ -1,8 +1,8 @@
 include_guard(GLOBAL)
 
-set(SHADER_SRC_DIR "${CMAKE_SOURCE_DIR}/engine/native/rendering/shaders")
+set(SHADER_SRC_DIR "${CMAKE_SOURCE_DIR}/Engine/cpp/runtime/rendering/shaders")
 set(SHADER_BIN_DIR "${CMAKE_BINARY_DIR}")
-set(BGFX_INCLUDE "${CMAKE_SOURCE_DIR}/engine/native/thirdparty/bgfx/src")
+set(BGFX_INCLUDE "${CMAKE_SOURCE_DIR}/Engine/cpp/thirdparty/bgfx/src")
 
 function(compile_shaders TARGET_NAME)
     file(MAKE_DIRECTORY ${SHADER_BIN_DIR})
@@ -37,7 +37,7 @@ function(compile_shaders TARGET_NAME)
     set(QUAD_VARYING_DEF "${SHADER_SRC_DIR}/varying_quad.def.sc")
 
     add_custom_command(
-        TARGET draconic POST_BUILD
+        TARGET ${TARGET_NAME} POST_BUILD
         COMMENT "Compiling asset pipelines and core engine shaders via native tools..."
 
         COMMAND $<TARGET_FILE:shaderc>
@@ -76,9 +76,9 @@ function(compile_shaders TARGET_NAME)
             --varyingdef ${QUAD_VARYING_DEF}
             -i ${BGFX_INCLUDE}
 
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${VERTEX_OUTPUT} $<TARGET_FILE_DIR:draconic>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FRAGMENT_OUTPUT} $<TARGET_FILE_DIR:draconic>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${QUAD_VERTEX_OUTPUT} $<TARGET_FILE_DIR:draconic>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${QUAD_FRAGMENT_OUTPUT} $<TARGET_FILE_DIR:draconic>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${VERTEX_OUTPUT} $<TARGET_FILE_DIR:${TARGET_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FRAGMENT_OUTPUT} $<TARGET_FILE_DIR:${TARGET_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${QUAD_VERTEX_OUTPUT} $<TARGET_FILE_DIR:${TARGET_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${QUAD_FRAGMENT_OUTPUT} $<TARGET_FILE_DIR:${TARGET_NAME}>
     )
 endfunction()

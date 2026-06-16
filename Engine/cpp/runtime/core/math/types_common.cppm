@@ -1,6 +1,5 @@
 export module core.math.types:common;
 import core.defs;
-import core.stdtypes;
 
 export namespace draco::math {
 	struct Vector2;
@@ -27,11 +26,8 @@ export namespace draco::math {
         [[nodiscard]] constexpr const f32& operator[](i32 i) const noexcept;
 
         // swizzle
-        [[nodiscard]] constexpr Vector2 operator[](i32 i0, i32 i1) noexcept;
         [[nodiscard]] constexpr Vector2 operator[](i32 i0, i32 i1) const noexcept;
-        [[nodiscard]] constexpr Vector3 operator[](i32 i0, i32 i1, i32 i2) noexcept;
         [[nodiscard]] constexpr Vector3 operator[](i32 i0, i32 i1, i32 i2) const noexcept;
-        [[nodiscard]] constexpr Vector4 operator[](i32 i0, i32 i1, i32 i2, i32 i3) noexcept;
         [[nodiscard]] constexpr Vector4 operator[](i32 i0, i32 i1, i32 i2, i32 i3) const noexcept;
 
         // operators
@@ -72,11 +68,8 @@ export namespace draco::math {
         [[nodiscard]] constexpr const f32& operator[](i32 i) const noexcept;
 
         // swizzle
-        [[nodiscard]] constexpr Vector2 operator[](i32 i0, i32 i1) noexcept;
         [[nodiscard]] constexpr Vector2 operator[](i32 i0, i32 i1) const noexcept;
-        [[nodiscard]] constexpr Vector3 operator[](i32 i0, i32 i1, i32 i2) noexcept;
         [[nodiscard]] constexpr Vector3 operator[](i32 i0, i32 i1, i32 i2) const noexcept;
-        [[nodiscard]] constexpr Vector4 operator[](i32 i0, i32 i1, i32 i2, i32 i3) noexcept;
         [[nodiscard]] constexpr Vector4 operator[](i32 i0, i32 i1, i32 i2, i32 i3) const noexcept;
 
         // operators
@@ -120,11 +113,8 @@ export namespace draco::math {
         [[nodiscard]] constexpr const f32& operator[](i32 i) const noexcept;
 
         // swizzle
-        [[nodiscard]] constexpr Vector2 operator[](i32 i0, i32 i1) noexcept;
         [[nodiscard]] constexpr Vector2 operator[](i32 i0, i32 i1) const noexcept;
-        [[nodiscard]] constexpr Vector3 operator[](i32 i0, i32 i1, i32 i2) noexcept;
         [[nodiscard]] constexpr Vector3 operator[](i32 i0, i32 i1, i32 i2) const noexcept;
-        [[nodiscard]] constexpr Vector4 operator[](i32 i0, i32 i1, i32 i2, i32 i3) noexcept;
         [[nodiscard]] constexpr Vector4 operator[](i32 i0, i32 i1, i32 i2, i32 i3) const noexcept;
 
         // member operators
@@ -143,7 +133,8 @@ export namespace draco::math {
     };
 }
 
-template<typename T> consteval T select(const draco::i32 i, const T v1, const T v2) {
+template<typename T>
+consteval const T& select(const draco::i32 i, const T& v1, const T& v2) {
     switch (i) {
         case 0:  return v1;
         case 1:  return v2;
@@ -151,7 +142,17 @@ template<typename T> consteval T select(const draco::i32 i, const T v1, const T 
     }
 }
 
-template<typename T> consteval T select(const draco::i32 i, const T v1, const T v2, const T v3) {
+template<typename T>
+consteval T& select(const draco::i32 i, T& v1, T& v2) {
+    switch (i) {
+        case 0:  return v1;
+        case 1:  return v2;
+        default: throw "Index out of range";
+    }
+}
+
+template<typename T>
+consteval const T& select(const draco::i32 i, const T& v1, const T& v2, const T& v3) {
     switch (i) {
         case 0:  return v1;
         case 1:  return v2;
@@ -160,7 +161,29 @@ template<typename T> consteval T select(const draco::i32 i, const T v1, const T 
     }
 }
 
-template<typename T> consteval T select(const draco::i32 i, const T v1, const T v2, const T v3, const T v4) {
+template<typename T>
+consteval T& select(const draco::i32 i, T& v1, T& v2, T& v3) {
+    switch (i) {
+        case 0:  return v1;
+        case 1:  return v2;
+        case 2:  return v3;
+        default: throw "Index out of range";
+    }
+}
+
+template<typename T>
+consteval const T& select(const draco::i32 i, const T& v1, const T& v2, const T& v3, const T& v4) {
+    switch (i) {
+        case 0:  return v1;
+        case 1:  return v2;
+        case 2:  return v3;
+        case 3:  return v4;
+        default: throw "Index out of range";
+    }
+}
+
+template<typename T>
+consteval T& select(const draco::i32 i, T& v1, T& v2, T& v3, T& v4) {
     switch (i) {
         case 0:  return v1;
         case 1:  return v2;

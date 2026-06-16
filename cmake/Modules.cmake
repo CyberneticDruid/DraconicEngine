@@ -1,6 +1,6 @@
 include_guard(GLOBAL)
 
-set(NATIVE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/engine/native")
+set(NATIVE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/Engine/cpp")
 
 set(NATIVE_THIRD_PARTY_DIR "${NATIVE_SOURCE_DIR}/thirdparty")
 

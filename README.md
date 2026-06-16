@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://draconicengine.org">
-    <img src="assets/draconic_logo_text.png" width="400" alt="Draconic Engine Logo">
+    <img src="Docs/assets/draconic_logo_text.png" width="400" alt="Draconic Engine Logo">
   </a>
 </p>
 
@@ -43,4 +43,4 @@ Draconic Engine is a two-tiered project, with an inner core written in C++ and
 a public interface and editor in C#.
 
 Regarding the native layer, it is written in C++, according to the C++23 standard and using modules.
-Documentation regarding how C++ modules are used can be read [here](docs/cxxmodules.md).
+Documentation regarding how C++ modules are used can be read [here](Docs/cxxmodules.md).

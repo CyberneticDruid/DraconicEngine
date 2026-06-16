@@ -1,15 +1,7 @@
 module;
 
 #include <cmath>
-#include <algorithm>
 #include <format>
-#include "platform/simd.h"
-
-#if ARCH_X64
-    #include <immintrin.h>
-#elif ARCH_ARM64
-    #include <arm_neon.h>
-#endif
 
 export module core.math.types:vector4;
 export import :common;
@@ -74,37 +66,17 @@ export namespace draco::math {
     // element access
     [[nodiscard]] constexpr f32& Vector4::operator[](const i32 i) noexcept {
         if consteval {
-            switch (i) {
-                case 0: return x;
-                case 1: return y;
-                case 2: return z;
-                default:
-                case 3: return w;
-            }
+            return select(i, x, y, z, w);
         } else { return (&x)[i]; }
     }
 
     [[nodiscard]] constexpr const f32& Vector4::operator[](const i32 i) const noexcept {
         if consteval {
-            switch (i) {
-                case 0: return x;
-                case 1: return y;
-                case 2: return z;
-                default:
-                case 3: return w;
-            }
+            return select(i, x, y, z, w);
         } else { return (&x)[i]; }
     }
 
     // swizzle
-    [[nodiscard]] constexpr Vector2 Vector4::operator[](const i32 i0, const i32 i1) noexcept {
-        if consteval {
-            return { select(i0, x, y, z, w), select(i1, x, y, z, w) };
-        } else {
-            return { (&x)[i0], (&x)[i1] };
-        }
-    }
-
     [[nodiscard]] constexpr Vector2 Vector4::operator[](const i32 i0, const i32 i1) const noexcept {
         if consteval {
             return { select(i0, x, y, z, w), select(i1, x, y, z, w) };
@@ -113,27 +85,11 @@ export namespace draco::math {
         }
     }
 
-    [[nodiscard]] constexpr Vector3 Vector4::operator[](const i32 i0, const i32 i1, const i32 i2) noexcept {
-        if consteval {
-            return { select(i0, x, y, z, w), select(i1, x, y, z, w), select(i2, x, y, z, w) };
-        } else {
-            return { (&x)[i0], (&x)[i1], (&x)[i2] };
-        }
-    }
-
     [[nodiscard]] constexpr Vector3 Vector4::operator[](const i32 i0, const i32 i1, const i32 i2) const noexcept {
         if consteval {
             return { select(i0, x, y, z, w), select(i1, x, y, z, w), select(i2, x, y, z, w) };
         } else {
             return { (&x)[i0], (&x)[i1], (&x)[i2] };
-        }
-    }
-
-    [[nodiscard]] constexpr Vector4 Vector4::operator[](const i32 i0, const i32 i1, const i32 i2, const i32 i3) noexcept {
-        if consteval {
-            return { select(i0, x, y, z, w), select(i1, x, y, z, w), select(i2, x, y, z, w), select(i3, x, y, z, w)  };
-        } else {
-            return { (&x)[i0], (&x)[i1], (&x)[i2], (&x)[i3] };
         }
     }
 

@@ -117,10 +117,7 @@ namespace draco::rendering::renderer
 
         build_uniforms(material, p.uniforms);
 
-        f32 model[16];
-        draco::math::compute_matrix(transform, model);
-
-        std::memcpy(p.model, model, sizeof(model));
+        transform.to_matrix(p.model);
 
         submit_entity(p);
     }

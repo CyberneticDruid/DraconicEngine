@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     }
 
     SDL_Window* window = SDL_CreateWindow(
-        "Draconic Engine",
+        "Draconic Engine Rendering Sample",
         1280, 720,
         SDL_WINDOW_RESIZABLE
     );
@@ -112,30 +112,31 @@ int main(int argc, char* argv[])
     mat.sampler = s_texColor;
 
     mat.uniforms.push_back({.name_hash = draco::rendering::rhi::hash_uniform("u_tint"), .data = tint, .count = 1});
-
     mat.uniforms.push_back({.name_hash = draco::rendering::rhi::hash_uniform("u_offset"), .data = offset, .count = 1});
 
     draco::scene::Scene scene;
 
-    scene.renderables.push_back({cube_mesh, draco::math::make_transform(), mat});
-    scene.renderables.push_back({plane_mesh, draco::math::make_transform(), mat});
-    scene.renderables.push_back({sphere_mesh, draco::math::make_transform(), mat});
-    scene.renderables.push_back({cylinder_mesh, draco::math::make_transform(), mat}); 
-    scene.renderables.push_back({capsule_mesh, draco::math::make_transform(), mat}); 
+    static constexpr draco::math::Transform tr;
 
-    draco::math::set_position(scene.renderables[0].transform, -12.0f, 0.0f, 0.0f); 
-    draco::math::set_position(scene.renderables[1].transform, -6.0f, 0.0f, 0.0f);   
-    draco::math::set_position(scene.renderables[2].transform, 0.0f, 0.0f, 0.0f);    
-    draco::math::set_position(scene.renderables[3].transform, 6.0f, 0.0f, 0.0f);    
-    draco::math::set_position(scene.renderables[4].transform, 12.0f, 0.0f, 0.0f);   
+    scene.renderables.push_back({cube_mesh, tr, mat});
+    scene.renderables.push_back({plane_mesh, tr, mat});
+    scene.renderables.push_back({sphere_mesh, tr, mat});
+    scene.renderables.push_back({cylinder_mesh, tr, mat});
+    scene.renderables.push_back({capsule_mesh, tr, mat});
 
-    draco::math::set_rotation(scene.renderables[1].transform, -bx::kPiHalf, 0.0f, 0.0f); 
+    scene.renderables[0].transform.set_position(-12.0f, 0.0f, 0.0f);
+    scene.renderables[1].transform.set_position(-6.0f, 0.0f, 0.0f);
+    scene.renderables[2].transform.set_position(0.0f, 0.0f, 0.0f);
+    scene.renderables[3].transform.set_position(6.0f, 0.0f, 0.0f);
+    scene.renderables[4].transform.set_position(12.0f, 0.0f, 0.0f);
+
+    scene.renderables[1].transform.set_rotation(-bx::kPiHalf, 0.0f, 0.0f);
     
     while (running)
     {
         static draco::u64 last = SDL_GetTicks();
         draco::u64 now = SDL_GetTicks();
-        draco::f32 dt = (now - last) / 1000.0f;
+        draco::f32 dt = static_cast<draco::f32>(now - last) / 1000.0f;
         last = now;
 
         SDL_Event e;

@@ -1,7 +1,6 @@
 module;
 
 #include <vector>
-#include <cstdint>
 #include <filesystem>
 
 export module core.io.image_loader;
@@ -19,6 +18,6 @@ export namespace draco::core::io::image_loader
         bool is_valid = false;
     };
 
-    // Load an image file (PNG, JPG, etc) & decode it to raw RGBA8
+    // Load an image file (PNG, JPG, etc.) & decode it to raw RGBA8
     ImageData load_image(const std::filesystem::path& path);
 }

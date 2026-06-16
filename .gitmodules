@@ -1,12 +1,12 @@
-[submodule "engine/native/thirdparty/bx"]
-	path = engine/native/thirdparty/bx
+[submodule "Engine/cpp/thirdparty/bx"]
+	path = Engine/cpp/thirdparty/bx
 	url = https://github.com/bkaradzic/bx
-[submodule "engine/native/thirdparty/bimg"]
-	path = engine/native/thirdparty/bimg
+[submodule "Engine/cpp/thirdparty/bimg"]
+	path = Engine/cpp/thirdparty/bimg
 	url = https://github.com/bkaradzic/bimg
-[submodule "engine/native/thirdparty/bgfx"]
-	path = engine/native/thirdparty/bgfx
+[submodule "Engine/cpp/thirdparty/bgfx"]
+	path = Engine/cpp/thirdparty/bgfx
 	url = https://github.com/bkaradzic/bgfx
-[submodule "engine/native/thirdparty/sdl"]
-	path = engine/native/thirdparty/sdl
+[submodule "Engine/cpp/thirdparty/sdl"]
+	path = Engine/cpp/thirdparty/sdl
 	url = https://github.com/libsdl-org/SDL

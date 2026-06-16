@@ -1,5 +1,3 @@
-add_subdirectory(thirdparty SYSTEM)
-
 add_modules_library(platform)
 add_modules_library(core SHARED)
 add_modules_library(input)

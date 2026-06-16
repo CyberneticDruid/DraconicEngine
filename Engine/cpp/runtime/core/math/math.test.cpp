@@ -1,33 +1,4 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest.h>
-#include <type_traits>
-
-#define R_CHECK_EQ(L_expr, R_expr) {                                 \
-    const auto L_run = (L_expr);                                     \
-    const auto R_run = (R_expr);                                     \
-    static_assert(std::is_same_v<decltype(L_run), decltype(R_run)>); \
-    CHECK_EQ(L_run, R_run);                                          \
-}
-
-#define RAC_CHECK_EQ(L_expr, R_expr) {                                 \
-    static constexpr auto L_comp = (L_expr);                           \
-    static constexpr auto R_comp = (R_expr);                           \
-    static_assert(std::is_same_v<decltype(L_comp), decltype(R_comp)>); \
-    static_assert(L_comp == R_comp);                                   \
-    R_CHECK_EQ(L_expr, R_expr);                                        \
-}
-
-#define BASIC_R_SUBCASE(name, L_expr, R_expr) \
-    SUBCASE(name) { R_CHECK_EQ(L_expr, R_expr); }
-
-#define BASIC_R_SUBCASE_2(name, L_expr1, R_expr1, L_expr2, R_expr2) \
-    SUBCASE(name) { R_CHECK_EQ(L_expr1, R_expr1); R_CHECK_EQ(L_expr2, R_expr2); }
-
-#define BASIC_RAC_SUBCASE(name, L_expr, R_expr) \
-    SUBCASE(name) { RAC_CHECK_EQ(L_expr, R_expr); }
-
-#define BASIC_RAC_SUBCASE_2(name, L_expr1, R_expr1, L_expr2, R_expr2) \
-    SUBCASE(name) { RAC_CHECK_EQ(L_expr1, R_expr1); RAC_CHECK_EQ(L_expr2, R_expr2); }
+#include <doctest_with_main.h>
 
 import core.math;
 
@@ -35,13 +6,13 @@ using namespace draco;
 
 TEST_SUITE("math") {
     TEST_CASE("pow") {
-        f32 result = draco::math::pow(2.0f, 0.5f);
-        constexpr f32 expected = draco::math::SQRT2;
+        f32 result = math::pow(2.0f, 0.5f);
+        constexpr f32 expected = math::SQRT2;
         CHECK_EQ(result, expected);
     }
 
     TEST_CASE("abs") {
-        using draco::math::abs;
+        using math::abs;
 
         RAC_CHECK_EQ(abs(-1.f), 1.f);
         RAC_CHECK_EQ(abs(4.56f), 4.56f);
@@ -56,9 +27,9 @@ TEST_SUITE("math") {
 
 TEST_SUITE("vector2") {
     TEST_CASE("constructors") {
-        using draco::math::Vector2;
-        using draco::math::Vector3;
-        using draco::math::Vector4;
+        using math::Vector2;
+        using math::Vector3;
+        using math::Vector4;
 
         static constexpr Vector3 a{1.0f, 2.0f, 3.0f};
         static constexpr Vector4 b{4.0f, 5.0f, 6.0f, 7.0f};
@@ -80,7 +51,7 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("access") {
-        using draco::math::Vector2;
+        using math::Vector2;
 
         static constexpr Vector2 v(1.0f, 2.0f);
 
@@ -89,9 +60,9 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("swizzle") {
-        using draco::math::Vector2;
-        using draco::math::Vector3;
-        using draco::math::Vector4;
+        using math::Vector2;
+        using math::Vector3;
+        using math::Vector4;
         
         static constexpr Vector2 v{1.0f, 2.0f};
 
@@ -112,7 +83,7 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("swap") {
-        using draco::math::Vector2;
+        using math::Vector2;
 
         Vector2 a{1.f, 2.f};
         Vector2 b{2.f, 1.f};
@@ -124,8 +95,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("dot") {
-        using draco::math::Vector2;
-        using draco::math::dot;
+        using math::Vector2;
+        using math::dot;
 
         static constexpr Vector2 a{1.0f, 2.0f};
         static constexpr Vector2 b{3.0f, 4.0f};
@@ -147,9 +118,9 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("length") {
-        using draco::math::Vector2;
-        using draco::math::length;
-        using draco::math::length_sq;
+        using math::Vector2;
+        using math::length;
+        using math::length_sq;
 
         static constexpr Vector2 v{3.0f, 4.0f};
 
@@ -165,9 +136,9 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("distance") {
-        using draco::math::Vector2;
-        using draco::math::distance;
-        using draco::math::distance_sq;
+        using math::Vector2;
+        using math::distance;
+        using math::distance_sq;
 
         static constexpr Vector2 a{3.0f, 4.0f};
         static constexpr Vector2 b{-3.0f, 12.0f};
@@ -184,10 +155,10 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("normalize") {
-        using draco::math::Vector2;
-        using draco::math::length;
-        using draco::math::normalize;
-        using draco::math::normalize_fast;
+        using math::Vector2;
+        using math::length;
+        using math::normalize;
+        using math::normalize_fast;
 
         static constexpr Vector2 a{3.0f, 4.0f};
         static constexpr Vector2 b(1e-99);
@@ -202,8 +173,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("project") {
-        using draco::math::Vector2;
-        using draco::math::project;
+        using math::Vector2;
+        using math::project;
 
         static constexpr Vector2 a{4.0f, 6.0f};
         static constexpr Vector2 b{2.0f, 2.0f};
@@ -215,8 +186,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("reflect") {
-        using draco::math::Vector2;
-        using draco::math::reflect;
+        using math::Vector2;
+        using math::reflect;
 
         static constexpr Vector2 a{1.0f, 2.0f};
         static constexpr Vector2 b{3.0f, 4.0f};
@@ -228,9 +199,9 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("angle") {
-        using draco::math::Vector2;
-        using draco::math::angle;
-        using draco::math::PI2;
+        using math::Vector2;
+        using math::angle;
+        using math::PI2;
 
         static constexpr Vector2 a{2.0f, 1.0f};
         static constexpr Vector2 b{-2.0f, 4.0f};
@@ -242,8 +213,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("lerp") {
-        using draco::math::Vector2;
-        using draco::math::lerp;
+        using math::Vector2;
+        using math::lerp;
 
         static constexpr Vector2 a{1.0f, 2.0f};
         static constexpr Vector2 b{3.0f, 4.0f};
@@ -275,8 +246,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("min") {
-        using draco::math::Vector2;
-        using draco::math::min;
+        using math::Vector2;
+        using math::min;
 
         static constexpr Vector2 a{5.0f, 3.0f};
         static constexpr Vector2 b{1.0f, 7.0f};
@@ -297,9 +268,9 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("min_length") {
-        using draco::math::Vector2;
-        using draco::math::length;
-        using draco::math::min_length;
+        using math::Vector2;
+        using math::length;
+        using math::min_length;
 
         static constexpr Vector2 a{3.0f, 4.0f};  // len: 5
         static constexpr Vector2 b{5.0f, 12.0f}; // len: 13
@@ -324,8 +295,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("max") {
-        using draco::math::Vector2;
-        using draco::math::max;
+        using math::Vector2;
+        using math::max;
 
         static constexpr Vector2 a{5.0f, 3.0f};
         static constexpr Vector2 b{1.0f, 7.0f};
@@ -346,9 +317,9 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("max_length") {
-        using draco::math::Vector2;
-        using draco::math::length;
-        using draco::math::max_length;
+        using math::Vector2;
+        using math::length;
+        using math::max_length;
 
         static constexpr Vector2 a{3.0f, 4.0f};  // len: 5
         static constexpr Vector2 b{5.0f, 12.0f}; // len: 13
@@ -373,8 +344,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("clamp") {
-        using draco::math::Vector2;
-        using draco::math::clamp;
+        using math::Vector2;
+        using math::clamp;
 
         static constexpr Vector2 a{5.0f, 3.0f};
         static constexpr Vector2 b{1.0f, 7.0f};
@@ -392,9 +363,9 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("clamp_length") {
-        using draco::math::Vector2;
-        using draco::math::length;
-        using draco::math::clamp_length;
+        using math::Vector2;
+        using math::length;
+        using math::clamp_length;
 
         static constexpr Vector2 v{3.0f, 4.0f}; // len: 5
 
@@ -420,8 +391,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("abs") {
-        using draco::math::Vector2;
-        using draco::math::abs;
+        using math::Vector2;
+        using math::abs;
 
         RAC_CHECK_EQ(
             ( abs(Vector2{1.0f, -2.0f}) ),
@@ -430,11 +401,11 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("rounding") {
-        using draco::math::Vector2;
-        using draco::math::floor;
-        using draco::math::ceil;
-        using draco::math::trunc;
-        using draco::math::round;
+        using math::Vector2;
+        using math::floor;
+        using math::ceil;
+        using math::trunc;
+        using math::round;
         
         static constexpr Vector2 a{0.5f, 1.4f};
         static constexpr Vector2 b{-1.0f, 1.0f};
@@ -469,8 +440,8 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("sign") {
-        using draco::math::Vector2;
-        using draco::math::sign;
+        using math::Vector2;
+        using math::sign;
 
         RAC_CHECK_EQ(
             ( sign(Vector2{1.0f, -1.0f}) ),
@@ -479,9 +450,9 @@ TEST_SUITE("vector2") {
     }
 
     TEST_CASE("approx_eq") {
-        using draco::math::Vector2;
-        using draco::math::approx_eq;
-        using draco::math::CMP_EPSILON;
+        using math::Vector2;
+        using math::approx_eq;
+        using math::CMP_EPSILON;
 
         static constexpr Vector2 v{1.0f, 2.0f};
         static constexpr Vector2 offset = Vector2::x_axis(CMP_EPSILON);
@@ -505,9 +476,9 @@ TEST_SUITE("vector2") {
 
 TEST_SUITE("vector3") {
     TEST_CASE("constructors") {
-        using draco::math::Vector2;
-        using draco::math::Vector3;
-        using draco::math::Vector4;
+        using math::Vector2;
+        using math::Vector3;
+        using math::Vector4;
 
         static constexpr Vector2 a{1.0f, 2.0f};
         static constexpr Vector4 b{3.0f, 4.0f, 5.0f, 6.0f};
@@ -534,7 +505,7 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("access") {
-        using draco::math::Vector3;
+        using math::Vector3;
 
         static constexpr Vector3 v(1.0f, 2.0f, 3.0f);
 
@@ -544,9 +515,9 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("swizzle") {
-        using draco::math::Vector2;
-        using draco::math::Vector3;
-        using draco::math::Vector4;
+        using math::Vector2;
+        using math::Vector3;
+        using math::Vector4;
         
         static constexpr Vector3 v{1.0f, 2.0f, 3.0f};
 
@@ -567,7 +538,7 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("swap") {
-        using draco::math::Vector3;
+        using math::Vector3;
 
         Vector3 a{1.f, 2.f, 3.f};
         Vector3 b{3.f, 2.f, 1.f};
@@ -579,8 +550,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("dot") {
-        using draco::math::Vector3;
-        using draco::math::dot;
+        using math::Vector3;
+        using math::dot;
 
         static constexpr Vector3 a{1.0f, 2.0f, 3.0f};
         static constexpr Vector3 b{4.0f, 5.0f, 6.0f};
@@ -602,9 +573,9 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("length") {
-        using draco::math::Vector3;
-        using draco::math::length;
-        using draco::math::length_sq;
+        using math::Vector3;
+        using math::length;
+        using math::length_sq;
 
         static constexpr Vector3 v{2.0f, 4.0f, 4.0f};
 
@@ -620,9 +591,9 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("distance") {
-        using draco::math::Vector3;
-        using draco::math::distance;
-        using draco::math::distance_sq;
+        using math::Vector3;
+        using math::distance;
+        using math::distance_sq;
 
         static constexpr Vector3 a{2.0f, 4.0f, 4.0f};
         static constexpr Vector3 b{-1.0f, -2.0f, -2.0f};
@@ -639,10 +610,10 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("normalize") {
-        using draco::math::Vector3;
-        using draco::math::length;
-        using draco::math::normalize;
-        using draco::math::normalize_fast;
+        using math::Vector3;
+        using math::length;
+        using math::normalize;
+        using math::normalize_fast;
 
         static constexpr Vector3 a{0.0f, 6.4f, 4.8f};
         static constexpr Vector3 b(1e-99);
@@ -657,8 +628,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("project") {
-        using draco::math::Vector3;
-        using draco::math::project;
+        using math::Vector3;
+        using math::project;
 
         static constexpr Vector3 a{2.0f, 8.0f, 4.0f};
         static constexpr Vector3 b{1.0f, 1.0f, 2.0f};
@@ -670,8 +641,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("reflect") {
-        using draco::math::Vector3;
-        using draco::math::reflect;
+        using math::Vector3;
+        using math::reflect;
 
         static constexpr Vector3 a{1.0f, 2.0f, 3.0f};
         static constexpr Vector3 b{4.0f, 5.0f, 6.0f};
@@ -683,9 +654,9 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("angle") {
-        using draco::math::Vector3;
-        using draco::math::angle;
-        using draco::math::PI;
+        using math::Vector3;
+        using math::angle;
+        using math::PI;
 
         static constexpr Vector3 a{2.0f, 4.0f, 4.0f};
         static constexpr Vector3 b{-4.0f, -8.0f, -8.0f};
@@ -697,8 +668,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("lerp") {
-        using draco::math::Vector3;
-        using draco::math::lerp;
+        using math::Vector3;
+        using math::lerp;
 
         static constexpr Vector3 a{1.0f, 2.0f, 3.0f};
         static constexpr Vector3 b{4.0f, 5.0f, 6.0f};
@@ -730,8 +701,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("min") {
-        using draco::math::Vector3;
-        using draco::math::min;
+        using math::Vector3;
+        using math::min;
 
         static constexpr Vector3 a{5.0f, 8.0f, 3.0f};
         static constexpr Vector3 b{1.0f, 6.0f, 7.0f};
@@ -752,9 +723,9 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("min_length") {
-        using draco::math::Vector3;
-        using draco::math::length;
-        using draco::math::min_length;
+        using math::Vector3;
+        using math::length;
+        using math::min_length;
 
         static constexpr Vector3 a{2.0f, 4.0f, 4.0f};   // len: 6
         static constexpr Vector3 b{5.0f, 10.0f, 10.0f}; // len: 15
@@ -779,8 +750,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("max") {
-        using draco::math::Vector3;
-        using draco::math::max;
+        using math::Vector3;
+        using math::max;
 
         static constexpr Vector3 a{5.0f, 8.0f, 3.0f};
         static constexpr Vector3 b{1.0f, 6.0f, 7.0f};
@@ -801,9 +772,9 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("max_length") {
-        using draco::math::Vector3;
-        using draco::math::length;
-        using draco::math::max_length;
+        using math::Vector3;
+        using math::length;
+        using math::max_length;
 
         static constexpr Vector3 a{2.0f, 4.0f, 4.0f};   // len: 6
         static constexpr Vector3 b{5.0f, 10.0f, 10.0f}; // len: 15
@@ -828,8 +799,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("clamp") {
-        using draco::math::Vector3;
-        using draco::math::clamp;
+        using math::Vector3;
+        using math::clamp;
 
         static constexpr Vector3 a{5.0f, 8.0f, 3.0f};
         static constexpr Vector3 b{1.0f, 6.0f, 7.0f};
@@ -847,9 +818,9 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("clamp_length") {
-        using draco::math::Vector3;
-        using draco::math::length;
-        using draco::math::clamp_length;
+        using math::Vector3;
+        using math::length;
+        using math::clamp_length;
 
         static constexpr Vector3 v{2.0f, 4.0f, 4.0f}; // len: 6
 
@@ -875,8 +846,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("abs") {
-        using draco::math::Vector3;
-        using draco::math::abs;
+        using math::Vector3;
+        using math::abs;
 
         RAC_CHECK_EQ(
             ( abs(Vector3{1.0f, -2.0f, 0.0f}) ),
@@ -885,11 +856,11 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("rounding") {
-        using draco::math::Vector3;
-        using draco::math::floor;
-        using draco::math::ceil;
-        using draco::math::trunc;
-        using draco::math::round;
+        using math::Vector3;
+        using math::floor;
+        using math::ceil;
+        using math::trunc;
+        using math::round;
         
         static constexpr Vector3 a{0.5f, -0.5f, 1.4f};
         static constexpr Vector3 b{-1.0f, 0.0f, 1.0f};
@@ -924,8 +895,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("sign") {
-        using draco::math::Vector3;
-        using draco::math::sign;
+        using math::Vector3;
+        using math::sign;
 
         RAC_CHECK_EQ(
             ( sign(Vector3{1.0f, -1.0f, 0.0f}) ),
@@ -934,9 +905,9 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("approx_eq") {
-        using draco::math::Vector3;
-        using draco::math::approx_eq;
-        using draco::math::CMP_EPSILON;
+        using math::Vector3;
+        using math::approx_eq;
+        using math::CMP_EPSILON;
 
         static constexpr Vector3 v{1.0f, 2.0f, 3.0f};
         static constexpr Vector3 offset = Vector3::x_axis(CMP_EPSILON);
@@ -958,8 +929,8 @@ TEST_SUITE("vector3") {
     }
 
     TEST_CASE("cross") {
-        using draco::math::Vector3;
-        using draco::math::cross;
+        using math::Vector3;
+        using math::cross;
 
         RAC_CHECK_EQ(
             ( cross(Vector3::x_axis(), Vector3::y_axis()) ),
@@ -970,9 +941,9 @@ TEST_SUITE("vector3") {
 
 TEST_SUITE("vector4") {
     TEST_CASE("constructors") {
-        using draco::math::Vector2;
-        using draco::math::Vector3;
-        using draco::math::Vector4;
+        using math::Vector2;
+        using math::Vector3;
+        using math::Vector4;
 
         static constexpr Vector2 a{1.0f, 2.0f};
         static constexpr Vector3 b{3.0f, 4.0f, 5.0f};
@@ -1024,7 +995,7 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("access") {
-        using draco::math::Vector4;
+        using math::Vector4;
 
         static constexpr Vector4 v(1.0f, 2.0f, 3.0f, 4.0f);
 
@@ -1035,9 +1006,9 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("swizzle") {
-        using draco::math::Vector2;
-        using draco::math::Vector3;
-        using draco::math::Vector4;
+        using math::Vector2;
+        using math::Vector3;
+        using math::Vector4;
         
         static constexpr Vector4 v{1.0f, 2.0f, 3.0f, 4.0f};
 
@@ -1058,7 +1029,7 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("swap") {
-        using draco::math::Vector4;
+        using math::Vector4;
 
         Vector4 a{1.f, 2.f, 3.f, 4.f};
         Vector4 b{4.f, 3.f, 2.f, 1.f};
@@ -1070,8 +1041,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("dot") {
-        using draco::math::Vector4;
-        using draco::math::dot;
+        using math::Vector4;
+        using math::dot;
 
         static constexpr Vector4 a{1.0f, 2.0f, 3.0f, 4.0f};
         static constexpr Vector4 b{5.0f, 6.0f, 7.0f, 8.0f};
@@ -1093,9 +1064,9 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("length") {
-        using draco::math::Vector4;
-        using draco::math::length;
-        using draco::math::length_sq;
+        using math::Vector4;
+        using math::length;
+        using math::length_sq;
 
         static constexpr Vector4 v{1.0f, 2.0f, 2.0f, 4.0f};
 
@@ -1111,9 +1082,9 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("distance") {
-        using draco::math::Vector4;
-        using draco::math::distance;
-        using draco::math::distance_sq;
+        using math::Vector4;
+        using math::distance;
+        using math::distance_sq;
 
         static constexpr Vector4 a{1.0f, 2.0f, 2.0f, 4.0f};
         static constexpr Vector4 b{3.0f, 6.0f, 7.0f, 10.0f};
@@ -1130,10 +1101,10 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("normalize") {
-        using draco::math::Vector4;
-        using draco::math::length;
-        using draco::math::normalize;
-        using draco::math::normalize_fast;
+        using math::Vector4;
+        using math::length;
+        using math::normalize;
+        using math::normalize_fast;
 
         static constexpr Vector4 a{2.0f, 4.0f, 5.0f, 6.0f};
         static constexpr Vector4 b(1e-99);
@@ -1148,8 +1119,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("project") {
-        using draco::math::Vector4;
-        using draco::math::project;
+        using math::Vector4;
+        using math::project;
 
         static constexpr Vector4 a{8.0f, 2.0f, 6.0f, 8.0f};
         static constexpr Vector4 b{12.0f, 14.0f, 8.0f, 6.0f};
@@ -1161,8 +1132,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("reflect") {
-        using draco::math::Vector4;
-        using draco::math::reflect;
+        using math::Vector4;
+        using math::reflect;
 
         static constexpr Vector4 a{1.0f, 2.0f, 3.0f, 4.0f};
         static constexpr Vector4 b{5.0f, 6.0f, 7.0f, 8.0f};
@@ -1174,9 +1145,9 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("angle") {
-        using draco::math::Vector4;
-        using draco::math::angle;
-        using draco::math::PI2;
+        using math::Vector4;
+        using math::angle;
+        using math::PI2;
 
         static constexpr Vector4 a{1.0f, 5.0f, 1.0f, 3.0f};
         static constexpr Vector4 b{2.0f, -6.0f, -2.0f, 10.0f};
@@ -1188,8 +1159,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("lerp") {
-        using draco::math::Vector4;
-        using draco::math::lerp;
+        using math::Vector4;
+        using math::lerp;
 
         static constexpr Vector4 a{1.0f, 2.0f, 3.0f, 4.0f};
         static constexpr Vector4 b{5.0f, 6.0f, 7.0f, 8.0f};
@@ -1221,8 +1192,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("min") {
-        using draco::math::Vector4;
-        using draco::math::min;
+        using math::Vector4;
+        using math::min;
 
         static constexpr Vector4 a{5.0f, 8.0f, 3.0f, 4.0f};
         static constexpr Vector4 b{1.0f, 6.0f, 7.0f, 2.0f};
@@ -1243,9 +1214,9 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("min_length") {
-        using draco::math::Vector4;
-        using draco::math::length;
-        using draco::math::min_length;
+        using math::Vector4;
+        using math::length;
+        using math::min_length;
 
         static constexpr Vector4 a{1.0f, 2.0f, 2.0f, 4.0f};   // len: 5
         static constexpr Vector4 b{1.0f, -3.0f, -1.0f, 5.0f}; // len: 6
@@ -1270,8 +1241,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("max") {
-        using draco::math::Vector4;
-        using draco::math::max;
+        using math::Vector4;
+        using math::max;
 
         static constexpr Vector4 a{5.0f, 8.0f, 3.0f, 4.0f};
         static constexpr Vector4 b{1.0f, 6.0f, 7.0f, 2.0f};
@@ -1292,9 +1263,9 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("max_length") {
-        using draco::math::Vector4;
-        using draco::math::length;
-        using draco::math::max_length;
+        using math::Vector4;
+        using math::length;
+        using math::max_length;
 
         static constexpr Vector4 a{1.0f, 2.0f, 2.0f, 4.0f};   // len: 5
         static constexpr Vector4 b{1.0f, -3.0f, -1.0f, 5.0f}; // len: 6
@@ -1319,8 +1290,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("clamp") {
-        using draco::math::Vector4;
-        using draco::math::clamp;
+        using math::Vector4;
+        using math::clamp;
 
         static constexpr Vector4 a{5.0f, 8.0f, 3.0f, 4.0f};
         static constexpr Vector4 b{1.0f, 6.0f, 7.0f, 2.0f};
@@ -1338,9 +1309,9 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("clamp_length") {
-        using draco::math::Vector4;
-        using draco::math::length;
-        using draco::math::clamp_length;
+        using math::Vector4;
+        using math::length;
+        using math::clamp_length;
 
         static constexpr Vector4 v{1.0f, -3.0f, -1.0f, 5.0f}; // len: 6
 
@@ -1366,8 +1337,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("abs") {
-        using draco::math::Vector4;
-        using draco::math::abs;
+        using math::Vector4;
+        using math::abs;
 
         RAC_CHECK_EQ(
             ( abs(Vector4{1.0f, -2.0f, -3.0f, 0.0f}) ),
@@ -1376,11 +1347,11 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("rounding") {
-        using draco::math::Vector4;
-        using draco::math::floor;
-        using draco::math::ceil;
-        using draco::math::trunc;
-        using draco::math::round;
+        using math::Vector4;
+        using math::floor;
+        using math::ceil;
+        using math::trunc;
+        using math::round;
         
         static constexpr Vector4 a{0.5f, -0.5f, 1.4f, 1.6f};
         static constexpr Vector4 b{-1.0f, 0.0f, 1.0f, 2.0f};
@@ -1415,8 +1386,8 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("sign") {
-        using draco::math::Vector4;
-        using draco::math::sign;
+        using math::Vector4;
+        using math::sign;
 
         RAC_CHECK_EQ(
             ( sign(Vector4{1.0f, -1.0f, 0.0f, -0.0f}) ),
@@ -1425,9 +1396,9 @@ TEST_SUITE("vector4") {
     }
 
     TEST_CASE("approx_eq") {
-        using draco::math::Vector4;
-        using draco::math::approx_eq;
-        using draco::math::CMP_EPSILON;
+        using math::Vector4;
+        using math::approx_eq;
+        using math::CMP_EPSILON;
 
         static constexpr Vector4 v{1.0f, 2.0f, 3.0f, 4.0f};
         static constexpr Vector4 offset = Vector4::x_axis(CMP_EPSILON);
@@ -1446,5 +1417,21 @@ TEST_SUITE("vector4") {
             ( approx_eq(v, v + offset * 2.0f) ),
             ( false )
         );
+    }
+
+    TEST_CASE("Transform") {
+        using math::Transform;
+
+        static constexpr Transform transform;
+        STATIC_REQUIRE(transform.position[0] == 0.f);
+        STATIC_REQUIRE(transform.position[1] == 0.f);
+        STATIC_REQUIRE(transform.position[2] == 0.f);
+        STATIC_REQUIRE(transform.rotation[0] == 0.f);
+        STATIC_REQUIRE(transform.rotation[1] == 0.f);
+        STATIC_REQUIRE(transform.rotation[2] == 0.f);
+        STATIC_REQUIRE(transform.scale[0] == 1.f);
+        STATIC_REQUIRE(transform.scale[1] == 1.f);
+        STATIC_REQUIRE(transform.scale[2] == 1.f);
+
     }
 }
